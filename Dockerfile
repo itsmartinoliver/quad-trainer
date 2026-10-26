@@ -2,7 +2,9 @@ FROM python:3.10
 
 COPY pyproject.toml .
 COPY ppo_continuous_action.py .
-COPY env.py .
+COPY train.py .
+COPY upload_folder.py .
+COPY envs ./envs
 COPY utils ./utils
 COPY cleanrl_utils ./cleanrl_utils
 
