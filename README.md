@@ -9,7 +9,7 @@ Activate with `source venv/bin/activate`
 Install dependencies with `pip install .`
 
 ### Training
-Run `python ppo_continuous_action.py --env-id Quad-v0 --total-timesteps 50000 --seed 1 --save-model --capture-video` to train
+Run `python train.py ppo Quad_v0 50000 1` to train
 and `tensorboard --logdir runs` to view results.
 
 ### My Notes

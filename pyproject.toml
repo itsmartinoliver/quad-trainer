@@ -9,7 +9,8 @@ dependencies = [
     "tyro",
     "wandb",
     "tensorboard",
-    "moviepy"
+    "moviepy",
+    "google-cloud-storage"
 ]
 
 # Source - https://stackoverflow.com/a/72547402
