@@ -9,6 +9,13 @@ Activate with `source venv/bin/activate`
 Install dependencies with `pip install .`
 
 ### Training
-Run `python ppo_continuous_action.py --env-id Quad-v0 --total-timesteps 50000 --seed 1 --save-model --capture-video`
-and `tensorboard --logdir runs`
-to train and view results.
+Run `python train.py ppo Quad_v0 50000 1` to train
+and `tensorboard --logdir runs` to view results.
+
+Use `python train.py --help` for help.
+
+### My Notes
+Building with Docker: `docker buildx build -t itsmartinoliver/quad-trainer:latest --platform linux/amd64,linux/arm64 .` (in quad-trainer directory)  
+Upload to Docker Hub with `docker push itsmartinoliver/quad-trainer:latest`
+
+For Google Cloud bucket uploads, the service account should have "Storage Object User" role.
