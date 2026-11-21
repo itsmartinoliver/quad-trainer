@@ -1,5 +1,7 @@
 # Quad Trainer
 
+TODO: UPDATE README
+
 This project is built on CleanRL and trains a model to fly quadcopters.
 
 ### Setting Up
