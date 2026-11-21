@@ -91,7 +91,7 @@ class MyCustomEnv(gym.Env):
                             )
 
 gym.register(
-    id="Quad_v0",
+    id="quad_stable",
     entry_point=MyCustomEnv,
     max_episode_steps=500
 )

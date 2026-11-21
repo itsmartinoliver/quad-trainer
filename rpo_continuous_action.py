@@ -28,6 +28,8 @@ class Args:
     """if toggled, cuda will be enabled by default"""
     track: bool = False
     """if toggled, this experiment will be tracked with Weights and Biases"""
+    resume: str = None
+    """path of a *.pt model from which to resume training"""
     wandb_project_name: str = "cleanRL"
     """the wandb's project name"""
     wandb_entity: str = None
@@ -203,7 +205,23 @@ if __name__ == "__main__":
     next_done = torch.zeros(args.num_envs).to(device)
     num_updates = args.total_timesteps // args.batch_size
 
-    for update in range(1, num_updates + 1):
+    # https://docs.cleanrl.dev/advanced/resume-training/#resume-training_1
+    CHECKPOINT_FREQUENCY = 50
+    starting_update = 1
+
+    if args.resume:
+        #starting_update = wandb.run.summary.get("charts/update") + 1
+        #global_step = starting_update * args.batch_size
+        #api = wandb.Api()
+        #run = api.run(f"{wandb.run.entity}/{wandb.run.project}/{wandb.run.id}")
+        #model = run.file("agent.pt")
+        #model.download(f"models/{args.exp_name}/")
+        agent.load_state_dict(torch.load(
+            f"{args.resume}", map_location=device))
+        agent.eval()
+        print(f"Resuming training with model {args.resume}")
+
+    for update in range(starting_update, num_updates + 1):
         # Annealing the rate if instructed to do so.
         if args.anneal_lr:
             frac = 1.0 - (update - 1.0) / num_updates
@@ -231,7 +249,7 @@ if __name__ == "__main__":
             if "final_info" in infos:
                 for info in infos["final_info"]:
                     if info and "episode" in info:
-                        print(f"global_step={global_step}, episodic_return={info['episode']['r']}")
+                        #print(f"global_step={global_step}, episodic_return={info['episode']['r']}")
                         writer.add_scalar("charts/episodic_return", info["episode"]["r"], global_step)
                         writer.add_scalar("charts/episodic_length", info["episode"]["l"], global_step)
 
@@ -327,8 +345,17 @@ if __name__ == "__main__":
         writer.add_scalar("losses/approx_kl", approx_kl.item(), global_step)
         writer.add_scalar("losses/clipfrac", np.mean(clipfracs), global_step)
         writer.add_scalar("losses/explained_variance", explained_var, global_step)
-        print("SPS:", int(global_step / (time.time() - start_time)))
+        #print("SPS:", int(global_step / (time.time() - start_time)))
         writer.add_scalar("charts/SPS", int(global_step / (time.time() - start_time)), global_step)
+
+        # https://docs.cleanrl.dev/advanced/resume-training/#resume-training_1
+        if args.track:
+            # make sure to tune `CHECKPOINT_FREQUENCY` 
+            # so models are not saved too frequently
+            if update % CHECKPOINT_FREQUENCY == 0:
+                print(f"Saving model as {wandb.run.dir}/agent.pt")
+                torch.save(agent.state_dict(), f"{wandb.run.dir}/agent.pt")
+                wandb.save(f"{wandb.run.dir}/agent.pt", policy="now")
 
     envs.close()
     writer.close()
