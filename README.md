@@ -1,8 +1,5 @@
 # Quad Trainer
 
-TODO: UPDATE README
-TODO: UPDATE DOCKERFILE
-
 This project is built on CleanRL and trains a model to fly quadcopters.
 
 ### Setting Up
@@ -12,10 +9,10 @@ Activate with `source venv/bin/activate`
 Install dependencies with `pip install .`
 
 ### Training
-Run `python train.py ppo Quad_v0 50000 1` to train
+Run `python rpo_continuous_action.py --env-id quad_stable --track` to train
 and `tensorboard --logdir runs` to view results.
 
-Use `python train.py --help` for help.
+Use `python rpo_continuous_action.py --help` for help.
 
 ### My Notes
 Building with Docker: `docker buildx build -t itsmartinoliver/quad-trainer:latest --platform linux/amd64,linux/arm64 .` (in quad-trainer directory)  
