@@ -1,6 +1,31 @@
 import numpy as np
 from numpy.typing import NDArray
 
+import math
+import random
+
+def random_angular_velocity(max_speed=1.0):
+    """Return (wx, wy, wz), uniformly distributed in a speed ball.
+
+    Units are whatever you choose, commonly radians per second.
+    """
+    z = random.uniform(-1.0, 1.0)
+    azimuth = random.uniform(0.0, 2.0 * math.pi)
+    radius = max_speed * random.random() ** (1.0 / 3.0)
+
+    xy = math.sqrt(1.0 - z * z)
+    return (
+        radius * xy * math.cos(azimuth),
+        radius * xy * math.sin(azimuth),
+        radius * z,
+    )
+
+def random_quaternion():
+    """Return a uniformly random unit quaternion as (w, x, y, z)."""
+    q = [random.gauss(0.0, 1.0) for _ in range(4)]
+    norm = math.sqrt(sum(v * v for v in q))
+    return tuple(v / norm for v in q)
+
 def quaternion_to_euler(q: NDArray) -> tuple[float, float, float]:
     w, qx, qy, qz = q
     phi = np.arctan2(2 * (w * qx + qy * qz), 1 - 2 * (qx**2 + qy**2))
