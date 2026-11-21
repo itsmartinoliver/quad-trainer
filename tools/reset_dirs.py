@@ -72,7 +72,7 @@ def clear_multiple_directories(directories):
 if __name__ == "__main__":
     # Define directories to clear
     directories_to_clear = [
-        "./logs",
+        "./wandb",
         "./runs",
         "./videos"
     ]
